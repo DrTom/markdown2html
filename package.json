@@ -1,0 +1,29 @@
+{ "name" : "markdown2html"
+
+, "description" : "A utility to convert markdown to html for static usage."
+
+, "tags" : ["markdown"]
+
+, "version" : "0.1.0"
+
+, "author" : 
+    { "name" : "Thomas Schank"
+    , "email" : "DrTom@schank.ch"
+    , "url" : "http://Dr.Th.Schank.ch/" 
+    }
+
+, "engines" : 
+    ["node >=0.2.4"]
+
+, "dependencies": 
+    { "node-markdown": "*"
+    }
+
+, "directories" : 
+    { "lib" : "./lib" 
+    , "bin" : "./bin"
+    }
+
+, "bin" : 
+  { "markdown2html": "./bin/markdown2html" }
+}

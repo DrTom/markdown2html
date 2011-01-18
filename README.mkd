@@ -1,0 +1,36 @@
+markdown2html 
+=============
+
+An utility to convert markdown to html for static usage.
+
+The script itself is quite small, it is based on
+[node.js](http://nodejs.org/),
+[node-markdown](https://github.com/andris9/node-markdown) which
+itself is based on [showdown](http://attacklab.net/showdown/).
+
+
+Usage
+-------
+
+For example: `markdown2html Readme.mkd` should result with a file
+`Readme.html`.  The target `Readme.html` will be overwritten without
+warning!
+
+Install 
+-------
+
+For the time being:
+
+1. install the node package manager [npm](http://npmjs.org/)
+2. clone it from github
+3. change into source 
+4. npm link 
+
+
+Development
+-----------
+
+The source is tiny, straight forward, written in
+[CoffeeScript](http://jashkenas.github.com/coffee-script/) and
+located in the `src` directory.
+
