@@ -12,9 +12,22 @@ itself is based on [showdown](http://attacklab.net/showdown/).
 Usage
 -------
 
-For example: `markdown2html Readme.mkd` should result with a file
+For example: `markdown2html -i Readme.mkd` should result with a file
 `Readme.html`.  The target `Readme.html` will be overwritten without
 warning!
+
+### Options
+
+0. `--wrap` will add a HTML5 compliant header and wrap the contents
+  in `html` and `body` 
+
+0. `--style <css>` will include the supplied string as CSS, 
+  this option can be specified multiple times
+
+0. `--style someStyleFile.css` will include the contents (not a
+  hyper-link to the file!) of the file `someStyleFile.css` as CSS;
+  the option value will be treated as a CSS-string if the file is
+  not found
 
 Install 
 -------
@@ -22,9 +35,8 @@ Install
 For the time being:
 
 1. install the node package manager [npm](http://npmjs.org/)
-2. clone it from github
-3. change into source 
-4. npm link 
+0. install the _simpleapp_ library
+0. change into the main directory and issue `npm link` 
 
 
 Development

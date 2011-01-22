@@ -21,10 +21,20 @@ spawnWithOutput = (name,options)->
 task 'build', '', () ->
 
   spawnWithOutput 'coffee', ['--bare','-o','lib/','-c', 'src/']
+  spawnWithOutput 'coffee', ['--bare','-o','test/lib/','-c', 'test/src/']
  
 task 'continuous-build', '', () ->
 
   spawnWithOutput 'coffee', ['-w','--bare','-o','lib/','-c', 'src/']
+  spawnWithOutput 'coffee', ['-w','--bare','-o','test/lib/','-c', 'test/src/']
 
+
+task 'test','run the test suite', () ->
+
+  exec 'nodeunit test/lib/',  (err,stdout,stderr) ->
+    util.print stdout
+    util.print stderr
+    
+ 
  
 
