@@ -81,6 +81,37 @@ module.exports = testCase((function() {
           return test.done();
         });
       });
+    },
+    "testing --styleGithubWikilike": function(test) {
+      var cmd;
+      test.expect(4);
+      cmd = "" + bindir + "markdown2html --styleGithubWikilike -i " + testdir + "/fixture/document.mkd";
+      return exec(cmd, execEnv, function(err, stdout, sterr) {
+        test.ok(!(err != null), 'error must be null');
+        return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
+          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+          test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
+          test.ok(stdout.match(/\.wikistyle{/), "'wikistyle' must be present");
+          return test.done();
+        });
+      });
+    },
+    "testing --styleSectionNumbers": function(test) {
+      var cmd;
+      test.expect(4);
+      cmd = "" + bindir + "markdown2html --styleSectionNumbers -i " + testdir + "/fixture/document.mkd";
+      return exec(cmd, execEnv, function(err, stdout, sterr) {
+        test.ok(!(err != null), 'error must be null');
+        return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
+          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+          test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
+          test.ok(stdout.match(/body{counter-reset: section}/), "'wikistyle' must be present");
+          return test.done();
+        });
+      });
+    },
+    tearDown: function(callback) {
+      return clean(callback);
     }
   };
 })());

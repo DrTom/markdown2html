@@ -6,13 +6,21 @@
 
 ###
 
-
+child_process = require 'child_process'
+exec = child_process.exec
+path = require('path')
+fs = require('fs')
+main = path.join(path.dirname(fs.realpathSync(__filename)), '../')
+lib = main + "lib/"
+vendorlib = main + "vendor/lib/"
 
 exports.run = () ->
 
   simplecli = require 'simplecli'
-  fs = require 'fs'
-  md = require("node-markdown").Markdown
+  node_markdown = require("node-markdown").Markdown
+  #  showdown = require vendorlib + "showdown"
+
+  markdown = require lib + "markdown"
 
   infile = undefined
   outfile = undefined
@@ -28,6 +36,23 @@ exports.run = () ->
   )()
 
 
+  script = (() ->
+    s = ""
+    include:(link,script) ->
+      s+="\n<script" + (if link? then (" src='" + link + "'") else "")  + ">\n"
+      s+= script if script?
+      s+="</script>\n"
+    script: () -> s
+  )()
+
+
+  enableTexMath = (pathToMathJax) ->
+    script.include pathToMathJax, '''MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+  });\n
+'''
 
   filecontentOrValue = (value) ->
     # the use of Sync is intented in this case;
@@ -38,13 +63,29 @@ exports.run = () ->
       r = value
 
 
-  head = () -> '<!DOCTYPE HTML>\n<html>\n<head>\n  <meta charset="utf-8">\n  <title> ' + title + ' </title> 
-' + css.css() + '\n</head>\n\n<body>\n\n'
+  headAppend = ""
+  tailPrepend = ""
 
-  tail="\n</body>\n</html>"
+  head = () -> '<!DOCTYPE HTML>\n<html>\n<head>\n  <meta charset="utf-8">\n  <title> ' + title + ' </title> ' + css.css() + '\n'+ script.script()+'\n</head>\n\n<body>\n\n' + headAppend
+  tail= () -> tailPrepend + "\n</body>\n</html>"
 
-  options =
-    [ { short : 'w'
+
+  wrapInWikistyle= () ->
+    headAppend += "\n<div class='wikistyle'>\n"
+    tailPrepend = "\n</div>\n" + tailPrepend
+
+  options = [
+      { short: "i"
+      , long : "infile"
+      , value : true
+      , callback : (value) -> infile = value
+      }
+    , { short: "o"
+      , long : "outfile"
+      , value : true
+      , callback : (value) -> outfile = value
+      }
+    , { short : 'w'
       , long : 'wrap'
       , description : 'wraps content in <html><body> and so forth'
       , callback : () ->
@@ -64,20 +105,29 @@ exports.run = () ->
           wrap=true
           css.include(filecontentOrValue(value))
       }
-    , { short: "i"
-      , long : "infile"
-      , value : true
-      , callback : (value) -> infile = value
+    , { long: "enableTexMath"
+      , description: "enable mathematical notation in inline (la)tex style, requires path specification to MathJax.js"
+      , value: true
+      , callback: (value) ->
+          wrap=true
+          enableTexMath(value)
       }
-    , { short: "o"
-      , long : "outfile"
-      , value : true
-      , callback : (value) -> outfile = value
+    , { long: "styleGithubWikilike"
+      , callback: () ->
+          wrap=true
+          wrapInWikistyle()
+          css.include(filecontentOrValue(lib+"styles/githubWikilike.css"))
+      }
+    , { long: "styleSectionNumbers"
+      , callback: () ->
+          wrap=true
+          css.include(filecontentOrValue(lib+"styles/sectionNumbers.css"))
       }
     ]
 
   simplecli.argparser.parse
     options: options
+    help: true
 
   if not infile?
     console.log "infile required"
@@ -94,12 +144,12 @@ exports.run = () ->
       console.log "failed to read: " + infile
       process.exit -1
     else
-      html = md data, true
+      html = markdown.makeHtml data
       if not html?
         console.log "failed to convert to html"
         process.exit -1
       else
-        html = head()+html+tail if wrap
+        html = head()+html+tail() if wrap
         fs.writeFile outfile, html, (err) ->
           if err?
             console.log "failed to write "+outfile

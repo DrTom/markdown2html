@@ -79,8 +79,30 @@ module.exports = testCase(
           test.ok (stdout.match /color: red/), "'color: red' must be present"
           test.done()
 
-#    tearDown:(callback)->
-#      clean(callback)
+    "testing --styleGithubWikilike": (test) ->
+      test.expect 4
+      cmd = "#{bindir}markdown2html --styleGithubWikilike -i #{testdir}/fixture/document.mkd"
+      exec cmd , execEnv,(err,stdout,sterr) ->
+        test.ok (not err?),'error must be null'
+        exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->
+          test.ok (stdout.match /Hello World/), "'Hello World' must be present"
+          test.ok (stdout.match /DOCTYPE/), "'DOCTYPE' must be present"
+          test.ok (stdout.match /\.wikistyle{/), "'wikistyle' must be present"
+          test.done()
+
+    "testing --styleSectionNumbers": (test) ->
+      test.expect 4
+      cmd = "#{bindir}markdown2html --styleSectionNumbers -i #{testdir}/fixture/document.mkd"
+      exec cmd , execEnv,(err,stdout,sterr) ->
+        test.ok (not err?),'error must be null'
+        exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->
+          test.ok (stdout.match /Hello World/), "'Hello World' must be present"
+          test.ok (stdout.match /DOCTYPE/), "'DOCTYPE' must be present"
+          test.ok (stdout.match /body{counter-reset: section}/), "'wikistyle' must be present"
+          test.done()
+
+    tearDown:(callback)->
+      clean(callback)
 
   )()
 
