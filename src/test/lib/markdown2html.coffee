@@ -38,7 +38,7 @@ module.exports = testCase(
 
     "testing the executeable": (test) ->
       test.expect 3
-      cmd = "#{bindir}markdown2html -i #{testdir}/fixture/document.mkd"
+      cmd = "#{bindir}markdown2html -i #{testdir}/fixture/document.mkd -o #{testdir}/fixture/document.html"
       exec cmd , execEnv,(err,stdout,sterr) ->
         test.ok (not err?),'error must be null'
         exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->
@@ -46,10 +46,37 @@ module.exports = testCase(
           test.ok (not stdout.match /DOCTYPE/), "'DOCTYPE' must NOT be present"
           test.done()
 
+    "testing writing to stdout": (test) ->
+      test.expect 3
+      cmd = "#{bindir}markdown2html -i #{testdir}/fixture/document.mkd"
+      exec cmd , execEnv,(err,stdout,sterr) ->
+        test.ok (not err?),'error must be null'
+        test.ok (stdout.match /Hello World/), "'Hello World' must be present"
+        test.ok (not stdout.match /DOCTYPE/), "'DOCTYPE' must NOT be present"
+        test.done()
+
+    "testing reading from stdin": (test) ->
+      test.expect 3
+      cmd = "cat #{testdir}/fixture/document.mkd | #{bindir}markdown2html"
+      exec cmd , execEnv,(err,stdout,sterr) ->
+        test.ok (not err?),'error must be null'
+        test.ok (stdout.match /Hello World/), "'Hello World' must be present"
+        test.ok (not stdout.match /DOCTYPE/), "'DOCTYPE' must NOT be present"
+        test.done()
+
+    "testing reading multiple docs with -i ... -i ...": (test) ->
+      test.expect 4
+      cmd = "#{bindir}markdown2html -i #{testdir}/fixture/document.mkd -i #{testdir}/fixture/document2.mkd"
+      exec cmd , execEnv,(err,stdout,sterr) ->
+        test.ok (not err?),'error must be null'
+        test.ok (stdout.match /Hello World/), "'Hello World' must be present"
+        test.ok (stdout.match /Hello Moon/), "'Hello Moon' must be present"
+        test.ok (not stdout.match /DOCTYPE/), "'DOCTYPE' must NOT be present"
+        test.done()
 
     "testing the --wrap option": (test) ->
       test.expect 3
-      cmd = "#{bindir}markdown2html --wrap -i #{testdir}/fixture/document.mkd"
+      cmd = "#{bindir}markdown2html --wrap -i #{testdir}/fixture/document.mkd -o #{testdir}/fixture/document.html"
       exec cmd , execEnv,(err,stdout,sterr) ->
         test.ok (not err?),'error must be null'
         exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->
@@ -59,7 +86,7 @@ module.exports = testCase(
 
     "testing the --style option with string": (test) ->
       test.expect 4
-      cmd = "#{bindir}markdown2html --style 'h2:{color: blue;}' -i #{testdir}/fixture/document.mkd"
+      cmd = "#{bindir}markdown2html --style 'h2:{color: blue;}' -i #{testdir}/fixture/document.mkd -o #{testdir}/fixture/document.html"
       exec cmd , execEnv,(err,stdout,sterr) ->
         test.ok (not err?),'error must be null'
         exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->
@@ -70,7 +97,7 @@ module.exports = testCase(
 
     "testing the --style option with a file": (test) ->
       test.expect 4
-      cmd = "#{bindir}markdown2html --style #{testdir}/fixture/h2red.css -i #{testdir}/fixture/document.mkd"
+      cmd = "#{bindir}markdown2html --style #{testdir}/fixture/h2red.css -i #{testdir}/fixture/document.mkd -o #{testdir}/fixture/document.html"
       exec cmd , execEnv,(err,stdout,sterr) ->
         test.ok (not err?),'error must be null'
         exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->
@@ -81,7 +108,7 @@ module.exports = testCase(
 
     "testing --styleGithubWikilike": (test) ->
       test.expect 4
-      cmd = "#{bindir}markdown2html --styleGithubWikilike -i #{testdir}/fixture/document.mkd"
+      cmd = "#{bindir}markdown2html --styleGithubWikilike -i #{testdir}/fixture/document.mkd -o #{testdir}/fixture/document.html"
       exec cmd , execEnv,(err,stdout,sterr) ->
         test.ok (not err?),'error must be null'
         exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->
@@ -92,7 +119,7 @@ module.exports = testCase(
 
     "testing --styleSectionNumbers": (test) ->
       test.expect 4
-      cmd = "#{bindir}markdown2html --styleSectionNumbers -i #{testdir}/fixture/document.mkd"
+      cmd = "#{bindir}markdown2html --styleSectionNumbers -i #{testdir}/fixture/document.mkd -o #{testdir}/fixture/document.html"
       exec cmd , execEnv,(err,stdout,sterr) ->
         test.ok (not err?),'error must be null'
         exec "cat #{testdir}/fixture/document.html" , execEnv,(err,stdout,sterr) ->

@@ -41,4 +41,5 @@ And here is `backticked code` in an sentence.
 Html pre tag
 ------------
 
-<pre>in pre tag</pre>
+<pre>in pre tag
+</pre>

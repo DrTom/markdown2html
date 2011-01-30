@@ -4,7 +4,7 @@
 
 , "tags" : ["markdown"]
 
-, "version" : "0.2.1"
+, "version" : "0.3.0"
 
 , "author" : 
     { "name" : "Thomas Schank"
@@ -17,6 +17,7 @@
 
 , "dependencies": 
     { "simplecli" : "*"
+    , "node-xml" : "*"
     }
 
 , "directories" : 
@@ -26,5 +27,7 @@
     }
 
 , "bin" : 
-  { "markdown2html": "./bin/markdown2html" }
+  { "markdown2html": "./bin/markdown2html"
+  , "xhtml2latex": "./bin/xhtml2latex"
+  }
 }

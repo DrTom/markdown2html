@@ -20,13 +20,11 @@ spawnWithOutput = (name,options)->
 
 task 'build', '', () ->
 
-  spawnWithOutput 'coffee', ['--bare','-o','lib/','-c', 'src/']
-  spawnWithOutput 'coffee', ['--bare','-o','test/lib/','-c', 'test/src/']
+  spawnWithOutput 'coffee', ['--bare','-o','.','-c', 'src/']
  
 task 'continuous-build', '', () ->
 
-  spawnWithOutput 'coffee', ['-w','--bare','-o','lib/','-c', 'src/']
-  spawnWithOutput 'coffee', ['-w','--bare','-o','test/lib/','-c', 'test/src/']
+  spawnWithOutput 'coffee', ['-w','--bare','-o','.','-c', 'src/']
 
 
 task 'test','run the test suite', () ->

@@ -31,7 +31,7 @@ module.exports = testCase((function() {
     "testing the executeable": function(test) {
       var cmd;
       test.expect(3);
-      cmd = "" + bindir + "markdown2html -i " + testdir + "/fixture/document.mkd";
+      cmd = "" + bindir + "markdown2html -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
@@ -41,10 +41,44 @@ module.exports = testCase((function() {
         });
       });
     },
+    "testing writing to stdout": function(test) {
+      var cmd;
+      test.expect(3);
+      cmd = "" + bindir + "markdown2html -i " + testdir + "/fixture/document.mkd";
+      return exec(cmd, execEnv, function(err, stdout, sterr) {
+        test.ok(!(err != null), 'error must be null');
+        test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+        test.ok(!stdout.match(/DOCTYPE/), "'DOCTYPE' must NOT be present");
+        return test.done();
+      });
+    },
+    "testing reading from stdin": function(test) {
+      var cmd;
+      test.expect(3);
+      cmd = "cat " + testdir + "/fixture/document.mkd | " + bindir + "markdown2html";
+      return exec(cmd, execEnv, function(err, stdout, sterr) {
+        test.ok(!(err != null), 'error must be null');
+        test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+        test.ok(!stdout.match(/DOCTYPE/), "'DOCTYPE' must NOT be present");
+        return test.done();
+      });
+    },
+    "testing reading multiple docs with -i ... -i ...": function(test) {
+      var cmd;
+      test.expect(4);
+      cmd = "" + bindir + "markdown2html -i " + testdir + "/fixture/document.mkd -i " + testdir + "/fixture/document2.mkd";
+      return exec(cmd, execEnv, function(err, stdout, sterr) {
+        test.ok(!(err != null), 'error must be null');
+        test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+        test.ok(stdout.match(/Hello Moon/), "'Hello Moon' must be present");
+        test.ok(!stdout.match(/DOCTYPE/), "'DOCTYPE' must NOT be present");
+        return test.done();
+      });
+    },
     "testing the --wrap option": function(test) {
       var cmd;
       test.expect(3);
-      cmd = "" + bindir + "markdown2html --wrap -i " + testdir + "/fixture/document.mkd";
+      cmd = "" + bindir + "markdown2html --wrap -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
@@ -57,7 +91,7 @@ module.exports = testCase((function() {
     "testing the --style option with string": function(test) {
       var cmd;
       test.expect(4);
-      cmd = "" + bindir + "markdown2html --style 'h2:{color: blue;}' -i " + testdir + "/fixture/document.mkd";
+      cmd = "" + bindir + "markdown2html --style 'h2:{color: blue;}' -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
@@ -71,7 +105,7 @@ module.exports = testCase((function() {
     "testing the --style option with a file": function(test) {
       var cmd;
       test.expect(4);
-      cmd = "" + bindir + "markdown2html --style " + testdir + "/fixture/h2red.css -i " + testdir + "/fixture/document.mkd";
+      cmd = "" + bindir + "markdown2html --style " + testdir + "/fixture/h2red.css -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
@@ -85,7 +119,7 @@ module.exports = testCase((function() {
     "testing --styleGithubWikilike": function(test) {
       var cmd;
       test.expect(4);
-      cmd = "" + bindir + "markdown2html --styleGithubWikilike -i " + testdir + "/fixture/document.mkd";
+      cmd = "" + bindir + "markdown2html --styleGithubWikilike -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
@@ -99,7 +133,7 @@ module.exports = testCase((function() {
     "testing --styleSectionNumbers": function(test) {
       var cmd;
       test.expect(4);
-      cmd = "" + bindir + "markdown2html --styleSectionNumbers -i " + testdir + "/fixture/document.mkd";
+      cmd = "" + bindir + "markdown2html --styleSectionNumbers -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {

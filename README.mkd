@@ -1,36 +1,55 @@
 markdown2html 
 =============
 
+
 An utility to convert markdown to html for static usage.
 
 The script itself is quite small, it is based on
-[node.js](http://nodejs.org/),
-[node-markdown](https://github.com/andris9/node-markdown) which
-itself is based on [showdown](http://attacklab.net/showdown/).
+[node.js](http://nodejs.org/), and uses
+[showdown](http://attacklab.net/showdown/).
 
 
 Usage
 -------
 
-For example: `markdown2html -i Readme.mkd` should result with a file
-`Readme.html`.  The target `Readme.html` will be overwritten without
-warning!
+For example: `markdown2html -i Readme.mkd -o Readme.html` should
+result with a file `Readme.html`.
 
 ### Options
 
-0. `--wrap` will add a HTML5 compliant header and wrap the contents
+* `--wrap` will add a HTML5 compliant header and wrap the contents
   in `html` and `body` 
 
-0. `--style <css>` will include the supplied string as CSS, 
+* `--style <css>` will include the supplied string as CSS, 
   this option can be specified multiple times
 
-0. `--style someStyleFile.css` will include the contents (not a
+* `--style someStyleFile.css` will include the contents (not a
   hyper-link to the file!) of the file `someStyleFile.css` as CSS;
   the option value will be treated as a CSS-string if the file is
   not found
 
+* if '-i' is not specified, _stdin_ is used
+
+* same as above with '-o' and _stdout_
+
+* '-i' can be used multiple times to concatenate several input files 
+ 
+
+xhtml2latex
+===========
+
+Converting _html_ to _latex_ is questionable to begin with.  This
+works for a few limited usecases I do have. Your mileage may vary.
+
+### Options
+
+* `--wrap` will add latex headers
+
+* `-i` and `-o` options work like in _markdown2html_ 
+
+
 Install 
--------
+=======
 
 For the time being:
 
@@ -40,7 +59,7 @@ For the time being:
 
 
 Development
------------
+===========
 
 The source is tiny, straight forward, written in
 [CoffeeScript](http://jashkenas.github.com/coffee-script/) and

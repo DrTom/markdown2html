@@ -1,0 +1,53 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  this is the latex "header" that comes with markdown2html
+%% 
+%%    you might want to use you own header or start with 
+%%    this one as a template
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+
+% enable the following the make the whole look more like a result from MSWord
+% \renewcommand{\familydefault}{\sfdefault}
+% \usepackage{helvet}
+
+\usepackage{fullpage}
+
+\usepackage[pdfstartview=Fit, bookmarks=false, a4paper=true,
+pdfpagemode=fullscreen, backref=true, 
+ colorlinks=true,
+ linkcolor=NavyBlue,          % color of internal links
+    citecolor=NavyBlue,        % color of links to bibliography
+    filecolor=NavyBlue,      % color of file links
+    urlcolor=NavyBlue% color of external links
+]{hyperref}
+
+\usepackage[usenames,dvipsnames]{color}
+\definecolor{lightgray}{gray}{0.80}
+
+\pagestyle{empty}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+\newcommand{\code}[1]{\colorbox{lightgray}{\tt#1}}
+ 
+\usepackage{listings} 
+
+\lstset{
+basicstyle=\small,
+numbers=left, numbersep=1ex, numberstyle=\tiny,
+firstnumber=last,
+aboveskip=0mm, % Abstand über Listing
+belowskip=0mm, % Abstand unter Listing
+backgroundcolor=\color{lightgray},
+xleftmargin=2ex,
+}
+
+\begin{document}

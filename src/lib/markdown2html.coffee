@@ -7,6 +7,7 @@
 ###
 
 child_process = require 'child_process'
+util = require 'util'
 exec = child_process.exec
 path = require('path')
 fs = require('fs')
@@ -14,16 +15,14 @@ main = path.join(path.dirname(fs.realpathSync(__filename)), '../')
 lib = main + "lib/"
 vendorlib = main + "vendor/lib/"
 
+simplecli = require 'simplecli'
+markdown = require lib + "markdown"
+
+inBuffer= simplecli.string.createStringBuffer()
+readStdin = true
+outfile = undefined
+
 exports.run = () ->
-
-  simplecli = require 'simplecli'
-  node_markdown = require("node-markdown").Markdown
-  #  showdown = require vendorlib + "showdown"
-
-  markdown = require lib + "markdown"
-
-  infile = undefined
-  outfile = undefined
 
   wrap = false
   title = ""
@@ -66,7 +65,7 @@ exports.run = () ->
   headAppend = ""
   tailPrepend = ""
 
-  head = () -> '<!DOCTYPE HTML>\n<html>\n<head>\n  <meta charset="utf-8">\n  <title> ' + title + ' </title> ' + css.css() + '\n'+ script.script()+'\n</head>\n\n<body>\n\n' + headAppend
+  head = () -> '<!DOCTYPE HTML>\n<html>\n<head>\n  <meta charset="utf-8"/>\n  <title> ' + title + ' </title> ' + css.css() + '\n'+ script.script()+'\n</head>\n\n<body>\n\n' + headAppend
   tail= () -> tailPrepend + "\n</body>\n</html>"
 
 
@@ -77,8 +76,11 @@ exports.run = () ->
   options = [
       { short: "i"
       , long : "infile"
+      , description: "input file, can be repeated multiple times"
       , value : true
-      , callback : (value) -> infile = value
+      , callback : (value) ->
+          readStdin = false
+          inBuffer.append fs.readFileSync(value,'utf8')
       }
     , { short: "o"
       , long : "outfile"
@@ -87,7 +89,7 @@ exports.run = () ->
       }
     , { short : 'w'
       , long : 'wrap'
-      , description : 'wraps content in <html><body> and so forth'
+      , description : 'wraps con,tent in <html><body> and so forth'
       , callback : () ->
           wrap=true
       }
@@ -129,34 +131,30 @@ exports.run = () ->
     options: options
     help: true
 
-  if not infile?
-    console.log "infile required"
-    process.exit -1
 
-  outfile = outfile || infile.replace /\.(md|mkd|markdown)$/i, ".html"
-
-  if infile is outfile
-    console.log "failed determine outfile name"
-    process.exit -1
-
-  fs.readFile infile, 'utf8', (err,data) ->
-    if err?
-      console.log "failed to read: " + infile
-      process.exit -1
+  # TODO not DRY, should be in simplecli
+  read = (cont) ->
+    if readStdin
+      stdin = process.openStdin()
+      stdin.setEncoding('utf8')
+      stdin.on 'data', (chunk) ->
+        inBuffer.append chunk
+      stdin.on 'end', () ->
+        cont()
     else
-      html = markdown.makeHtml data
-      if not html?
-        console.log "failed to convert to html"
-        process.exit -1
-      else
-        html = head()+html+tail() if wrap
-        fs.writeFile outfile, html, (err) ->
-          if err?
-            console.log "failed to write "+outfile
-            process.exit -1
-          else
-            console.log "successfully written "+outfile
+      cont()
 
+  # TODO not DRY, should be in simplecli
+  write = (html,cont) ->
+    if not outfile?
+      process.stdout.write html
+      cont()
+    else
+      fs.writeFile outfile,html, 'utf8', (err) ->
+        cont()
 
-
+  read (err) ->
+    html = markdown.makeHtml inBuffer.toString()
+    html = head()+html+tail() if wrap
+    write html, (err)->
   
