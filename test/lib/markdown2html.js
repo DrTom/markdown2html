@@ -35,7 +35,7 @@ module.exports = testCase((function() {
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
-          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+          test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
           test.ok(!stdout.match(/DOCTYPE/), "'DOCTYPE' must NOT be present");
           return test.done();
         });
@@ -47,7 +47,7 @@ module.exports = testCase((function() {
       cmd = "" + bindir + "markdown2html -i " + testdir + "/fixture/document.mkd";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
-        test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+        test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
         test.ok(!stdout.match(/DOCTYPE/), "'DOCTYPE' must NOT be present");
         return test.done();
       });
@@ -58,7 +58,7 @@ module.exports = testCase((function() {
       cmd = "cat " + testdir + "/fixture/document.mkd | " + bindir + "markdown2html";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
-        test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+        test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
         test.ok(!stdout.match(/DOCTYPE/), "'DOCTYPE' must NOT be present");
         return test.done();
       });
@@ -69,7 +69,7 @@ module.exports = testCase((function() {
       cmd = "" + bindir + "markdown2html -i " + testdir + "/fixture/document.mkd -i " + testdir + "/fixture/document2.mkd";
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
-        test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+        test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
         test.ok(stdout.match(/Hello Moon/), "'Hello Moon' must be present");
         test.ok(!stdout.match(/DOCTYPE/), "'DOCTYPE' must NOT be present");
         return test.done();
@@ -82,7 +82,7 @@ module.exports = testCase((function() {
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
-          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+          test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
           test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
           return test.done();
         });
@@ -95,7 +95,7 @@ module.exports = testCase((function() {
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
-          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+          test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
           test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
           test.ok(stdout.match(/color: blue/), "'color: blue' must be present");
           return test.done();
@@ -109,23 +109,9 @@ module.exports = testCase((function() {
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
-          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+          test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
           test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
           test.ok(stdout.match(/color: red/), "'color: red' must be present");
-          return test.done();
-        });
-      });
-    },
-    "testing --styleGithubWikilike": function(test) {
-      var cmd;
-      test.expect(4);
-      cmd = "" + bindir + "markdown2html --styleGithubWikilike -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
-      return exec(cmd, execEnv, function(err, stdout, sterr) {
-        test.ok(!(err != null), 'error must be null');
-        return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
-          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
-          test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
-          test.ok(stdout.match(/\.wikistyle{/), "'wikistyle' must be present");
           return test.done();
         });
       });
@@ -137,9 +123,23 @@ module.exports = testCase((function() {
       return exec(cmd, execEnv, function(err, stdout, sterr) {
         test.ok(!(err != null), 'error must be null');
         return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
-          test.ok(stdout.match(/Hello World/), "'Hello World' must be present");
+          test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
           test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
           test.ok(stdout.match(/body{counter-reset: section}/), "'wikistyle' must be present");
+          return test.done();
+        });
+      });
+    },
+    "testing --styleGithubWikilike": function(test) {
+      var cmd;
+      test.expect(4);
+      cmd = "" + bindir + "markdown2html --styleGithubWikilike -i " + testdir + "/fixture/document.mkd -o " + testdir + "/fixture/document.html";
+      return exec(cmd, execEnv, function(err, stdout, sterr) {
+        test.ok(!(err != null), 'error must be null');
+        return exec("cat " + testdir + "/fixture/document.html", execEnv, function(err, stdout, sterr) {
+          test.ok(stdout.match(/This is a H1 Header/), "'This is a H1 Header' must be present");
+          test.ok(stdout.match(/DOCTYPE/), "'DOCTYPE' must be present");
+          test.ok(stdout.match(/\.wikistyle/), "'wikistyle' must be present");
           return test.done();
         });
       });

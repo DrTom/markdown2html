@@ -48,6 +48,18 @@ works for a few limited usecases I do have. Your mileage may vary.
 * `-i` and `-o` options work like in _markdown2html_ 
 
 
+
+Piping
+======
+
+The two commands can be conveniently chained by unix-piping, like: 
+
+     markdown2html -i test/fixture/document.mkd -w | xhtml2latex
+
+Note that _xhtml2latex_ requires a complete xml structure, so the `--wrap` option
+for _markdown2html_ is required.
+
+
 Install 
 =======
 
@@ -65,3 +77,8 @@ The source is tiny, straight forward, written in
 [CoffeeScript](http://jashkenas.github.com/coffee-script/) and
 located in the `src` directory.
 
+Stylesheets are written in [_sass_](http://sass-lang.com/). Recompiling
+them requires the ruby gem [_haml_](http://haml-lang.com/).
+
+Running tests and builds is most conveniently done by `cake test`
+or respectively `cake build`.

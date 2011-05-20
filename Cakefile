@@ -21,11 +21,12 @@ spawnWithOutput = (name,options)->
 task 'build', '', () ->
 
   spawnWithOutput 'coffee', ['--bare','-o','.','-c', 'src/']
- 
+  spawnWithOutput 'sass', ['-C','src/lib/styles/:lib/styles/']
+
 task 'continuous-build', '', () ->
 
   spawnWithOutput 'coffee', ['-w','--bare','-o','.','-c', 'src/']
-
+  spawnWithOutput 'sass', ['--watch','-C','src/lib/styles/:lib/styles/']
 
 task 'test','run the test suite', () ->
 

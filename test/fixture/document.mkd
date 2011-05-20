@@ -1,24 +1,25 @@
-Hello World! (H1 Header)
-============
 
-A paragraph.
+The _markdown2html_ and _xhtml2latex_ Test Sheet
+================================================
 
-A h2 Header 
---------------
+This page provides a few test cases for 
+_markdown2html_ and _xhtml2latex_.
 
-### A h3 Header
+Italics and Bold Text
+=====================
 
-There is _italics_ and **bold** in this
-paragraph.
+There is _italics_ and **bold** in this paragraph.
 
-#### A h4 Header
 
-##### A h5 Header
-
-###### A h6 Header
+Links and Hyperefs 
+===================
 
 We have links, e.g. to [markdown2html](https://github.com/DrTom/markdown2html), and
-some spelled out link <https://github.com/DrTom/simplecli>.
+spelled out links  <https://github.com/DrTom/simplecli>, too.
+
+
+Lists
+======
 
 Unordered List
 --------------
@@ -29,17 +30,54 @@ Ordered List
 --------------
 0. first item 
 0. second item
+0. you can number correctly but setting all to `0.` works just fine
 
 
-Code 
+Code
+=====
+
+Indented Code
 -------------
 
+Code can be marked by 4 spaces or one tab indention:
+
     println "some code"
+    # a comment 
+    x <- a * b
 
-And here is `backticked code` in an sentence.
+This will be shown as a code block.
 
-Html pre tag
+Inline Code
 ------------
 
+In-line code can be made with backticks like in here:  `y <- sin x`. 
+
+Code in pre-tags
+---------------
+
+Lastly we can use `<pre>` in very much the same sense as indention:
+
 <pre>in pre tag
+one more line
+last line  
 </pre>
+
+Headers 
+============
+
+This is a H1 Header
+===================
+
+This is a H2 Header 
+-------------------
+
+### This is a H3 Header 
+
+#### This is a H4 Header
+
+##### This is a H5 Header
+
+###### This is a H6 Header
+
+Note, in latex everything from H4 down is mapped to a latex paragraph headers.
+

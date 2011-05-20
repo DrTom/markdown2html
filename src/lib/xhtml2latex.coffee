@@ -2,25 +2,29 @@ path = require('path')
 fs = require('fs')
 main = path.join(path.dirname(fs.realpathSync(__filename)), '../')
 lib = main + "lib/"
+vendorlib = main + "vendor/lib/"
 
-xml = require("node-xml")
-simplecli = require 'simplecli'
+xml = require vendorlib + 'node-xml'
+helpers = require 'drtoms-nodehelpers'
 
-println = simplecli.printer.println
-print = simplecli.printer.print
+println = helpers.printer.println
+print = helpers.printer.print
 
-inBuffer= simplecli.string.createStringBuffer()
-outBuffer = simplecli.string.createStringBuffer()
+inBuffer= helpers.stringhelper.createStringBuffer()
+outBuffer = helpers.stringhelper.createStringBuffer()
 
-
+DEBUG = false
 
 ### parsing ##################################################
 
 parseString = (input,cont) ->
 
+
   parser = new xml.SaxParser (cb)  ->
 
     state = []
+
+    noPrintStack = []
 
     cb.onEndDocument  () ->
       cont()
@@ -36,27 +40,37 @@ parseString = (input,cont) ->
         
     cb.onStartElementNS (elem, attrs, prefix, uri, namespaces) ->
 
+      require("sys").debug((">>" for i in [1..state.length]).join("") + elem.toUpperCase() ) if DEBUG
+
       if elem is "a" then outBuffer.append "\\href{" + getHrefAtt(attrs) + "}{"
+      if elem is "br" then outBuffer.append "\\newline{}"
       if elem is "code" and state[state.length-1] isnt "pre" then outBuffer.append "\\code{"
       if elem is "em" then outBuffer.append "{\\it "
       if elem is "h1" then outBuffer.append "\\section{"
       if elem is "h2" then outBuffer.append "\\subsection{"
       if elem is "h3" then outBuffer.append "\\subsubsection{"
       if elem is "h4" then outBuffer.append "\\paragraph{"
+      if elem is "h5" then outBuffer.append "\\paragraph{"
+      if elem is "h6" then outBuffer.append "\\paragraph{"
       if elem is "li" then outBuffer.append "\\item "
       if elem is "ol" then outBuffer.append "\\begin{enumerate}"
       if elem is "pre" then outBuffer.append "\\begin{lstlisting}\n"
       if elem is "strong" then outBuffer.append "{\\bf "
       if elem is "ul" then outBuffer.append "\\begin{itemize}"
                        
+      if elem is "style" then noPrintStack.push(elem)
+
       # this is subtle: we push state AFTER processing the element ...
       state.push elem
 
     cb.onEndElementNS (elem, prefix, uri) ->
 
+
       # ... however; pop BEFORE processing the element
       # now, we can inspect the enclosing element more easily
       state.pop()
+
+      require("sys").debug(("<<" for i in [1..state.length]).join("") + elem.toUpperCase() ) if DEBUG
       
       if elem is "a" then outBuffer.append "}"
       if elem is "code" and state[state.length-1] isnt "pre" then outBuffer.append "}"
@@ -65,17 +79,21 @@ parseString = (input,cont) ->
       if elem is "h2" then outBuffer.append "}"
       if elem is "h3" then outBuffer.append "}"
       if elem is "h4" then outBuffer.append "}"
+      if elem is "h5" then outBuffer.append "}"
+      if elem is "h6" then outBuffer.append "}"
       if elem is "ol" then outBuffer.append "\\end{enumerate}"
       if elem is "p" then outBuffer.append "\n"
       if elem is "pre" then outBuffer.append "\\end{lstlisting}"
       if elem is "strong" then outBuffer.append "}"
       if elem is "ul" then outBuffer.append "\\end{itemize}"
 
+      if elem is "style" then noPrintStack.pop()
+
     cb.onCdata  (cdata) ->
       outBuffer.append cdata
 
     cb.onCharacters (chars)->
-      outBuffer.append chars
+      outBuffer.append chars if noPrintStack.length is 0
 
     null
 
@@ -97,6 +115,12 @@ sanitizeLatex = (s) ->
 
   s
 
+adjustSpecialChars = (s) ->
+
+  s = s.replace /#/mg, "\\#"
+
+  s
+
 ### run #######################################################
 
 exports.run = () ->
@@ -114,6 +138,10 @@ exports.run = () ->
           readStdin = false
           inBuffer.append fs.readFileSync(value,'utf8')
       }
+    , { short: "d"
+      , long : "debug"
+      , callback : () -> DEBUG = true
+      }
     , { short: "o"
       , long : "outfile"
       , value : true
@@ -126,13 +154,13 @@ exports.run = () ->
           wrap=true
       }
     , { long : 'supressSanitization'
-      , description : 'the programm tries to reduce noise and sanitize the resulting latex; which can be suppressed'
+      , description : 'the xhtml2latex tries to reduce noise and sanitize the resulting latex by default; supress this'
       , callback : () -> sanitize = false
       }
     ]
 
 
-  simplecli.argparser.parse
+  helpers.argparser.parse
     options: options
     help: true
 
@@ -171,6 +199,7 @@ exports.run = () ->
         sanitizeLatex(outBuffer.toString())
       else
         outBuffer.toString()
+    s = adjustSpecialChars(s)
     if not outfile?
       process.stdout.write s
       cont()

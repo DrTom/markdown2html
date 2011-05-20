@@ -23,8 +23,25 @@ execEnv =
 
 module.exports = testCase((() ->
 
-  "some test": (test)->
+  "xhtml2latex binary works and simple content": (test)->
 
-    test.done()
+    cmd = "#{bindir}markdown2html -i #{testdir}/fixture/document.mkd -w | #{bindir}xhtml2latex  "
+    exec cmd , execEnv,(err,stdout,sterr) ->
+      test.ok (not err?),'error must be null'
+      test.ok (stdout.match /This is a H1 Header/), "'This is a H1 Header' must be present"
+      test.ok (stdout.match /\\section\{This is a H1 Header.*\}/), " This is a H1 Header must be warpped in a section header"
+      test.ok not (stdout.match /\\documentclass/), " 'documentclass' must not be present"
+      test.done()
+
+  "using the --wrap option": (test)->
+
+    cmd = "#{bindir}markdown2html -i #{testdir}/fixture/document.mkd -w | #{bindir}xhtml2latex -w "
+    exec cmd , execEnv,(err,stdout,sterr) ->
+      test.ok (not err?),'error must be null'
+      test.ok (stdout.match /This is a H1 Header/), "'This is a H1 Header' must be present"
+      test.ok (stdout.match /\\section\{This is a H1 Header.*\}/), " This is a H1 Header must be warpped in a section header"
+      test.ok (stdout.match /\\documentclass/), " 'documentclass' must not be present"
+      test.done()
+
 
 )())

@@ -15,10 +15,11 @@ main = path.join(path.dirname(fs.realpathSync(__filename)), '../')
 lib = main + "lib/"
 vendorlib = main + "vendor/lib/"
 
-simplecli = require 'simplecli'
+helpers = (require 'drtoms-nodehelpers')
+stringhelper = helpers.stringhelper
 markdown = require lib + "markdown"
 
-inBuffer= simplecli.string.createStringBuffer()
+inBuffer= stringhelper.createStringBuffer()
 readStdin = true
 outfile = undefined
 
@@ -127,7 +128,7 @@ exports.run = () ->
       }
     ]
 
-  simplecli.argparser.parse
+  helpers.argparser.parse
     options: options
     help: true
 

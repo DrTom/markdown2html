@@ -1,4 +1,7 @@
+node_modules
 #*.pdf
+.sass-cache/**
+*.sass-cache/**
 tmp/**
 *.DS_Store
 *.aux
